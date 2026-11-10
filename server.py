@@ -9,9 +9,17 @@ if hasattr(sys.stdout, 'reconfigure'):
 
 app = Flask(__name__, static_folder=".")
 
+# Live group rooms (4-digit key) + live location tracking
+from live_rooms import live_bp
+app.register_blueprint(live_bp)
+
 @app.route("/")
 def index():
     return send_from_directory(".", "index.html")
+
+@app.route("/live_tracking.js")
+def live_tracking_js():
+    return send_from_directory(".", "live_tracking.js", mimetype="text/javascript")
 
 @app.route("/sos2.html")
 def sos2():
@@ -44,4 +52,5 @@ if __name__ == "__main__":
     print("===============================================================")
     print("[SERVER] TrekSOS Web Platform running on: http://localhost:5000")
     print("===============================================================")
-    app.run(host="127.0.0.1", port=5000, debug=False)
+    # Set TREKSOS_HOST=0.0.0.0 to let teammates' phones/laptops on the same Wi-Fi connect.
+    app.run(host=os.environ.get("TREKSOS_HOST", "127.0.0.1"), port=5000, debug=False, threaded=True)

@@ -60,6 +60,16 @@ An advanced offline-capable mountain navigation and hiking trails web platform b
 - Real-time simulation of squad members (Lead, Active, Behind, Out-of-Signal).
 - Pulse-animated Emergency SOS broadcasting with offline log recording.
 
+### 6. Live Squad Rooms & Member Tracking (4-digit key)
+- **Create / join a room** from the *Room* window or the journey wizard (Step 1). The server hands out a unique 4-digit key (`live_rooms.py`).
+- **Live GPS tracking**: every member's browser sends its GPS fix every ~3 s; everyone sees teammates move on the map with name labels, breadcrumb trails, battery, accuracy and distance from the leader.
+- **Status & warnings**: online / weak signal / offline, a "behind the leader" warning (>300 m), and SOS from any member is broadcast to the whole room.
+- **Rejoin after refresh**, leader hand-over when the leader leaves, rooms expire after 12 h idle.
+- **Demo mode**: *Add 2 demo teammates* in the Room window simulates trekkers so tracking can be shown on a single device.
+- Files: `live_rooms.py` (Flask API), `live_tracking.js` (map + UI). API: `POST /api/rooms/create|join`, `POST /api/rooms/<key>/location|sos|leave`, `GET /api/rooms/<key>/members`.
+
+**Using it on several devices:** run `set TREKSOS_HOST=0.0.0.0` (PowerShell: `$env:TREKSOS_HOST="0.0.0.0"`) before `python server.py` and open `http://<your-laptop-ip>:5000` on the other devices. Browsers only allow GPS on `https://` or `localhost`, so for real phone GPS expose the server through an HTTPS tunnel (e.g. `cloudflared tunnel --url http://localhost:5000` or ngrok).
+
 ---
 
 ## 🚀 Getting Started
